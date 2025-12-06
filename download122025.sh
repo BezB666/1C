@@ -2,7 +2,7 @@
 # set -e
 USERNAME="Trogdin"
 PASSWORD="6gDek----JsO"
-VERSION="8.3.8.2167"
+VERSION="8.3.27.1859"
 
 SRC=$(curl -c /tmp/cookies.txt -s -L https://releases.1c.ru)
 ACTION=$(echo "$SRC" | grep -oP '(?<=form method="post" id="loginForm" action=")[^"]+(?=")')
