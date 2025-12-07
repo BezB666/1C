@@ -87,7 +87,7 @@ main() {
         unz1C
         set1C
     else
-        echo "dow1C, unz1C, set1C, all"
+        echo "use parameters: dow1C, unz1C, set1C, all"
         exit 1
     fi
 }
