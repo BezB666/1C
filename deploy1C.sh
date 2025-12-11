@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -e
 
-dow1C() { 
+download1C() { 
   USERNAME="Trogdin"
   PASSWORD="6gDek----JsO"
   VERSION="8.3.27.1859"
@@ -65,14 +65,17 @@ dow1C() {
   
   rm /tmp/cookies.txt 
 }
-unz1C() { 
+
+unzip1C() { 
   sudo apt update && sudo apt install -y unzip
   unzip -o ./dist/client.zip -d ./dist/client
   unzip -o ./dist/server.zip -d ./dist/server
   # unzip -o ./dist/platform.zip -d ./dist/platform
 }
-ins1C() { 
-   # sudo apt-get –y install gdebi
+
+install_server() {
+
+  sudo apt update && sudo apt install -y gdebi
   
   packages_server=(
     "-common_"
@@ -86,23 +89,45 @@ ins1C() {
   for pkg in "${packages_server[@]}"; do
       mask=./dist/server/*${pkg}*
       sudo dpkg -i $mask
-      # ls $mask
   done
+  
+  apt-get install libwebkitgtk-1.0-0
+  apt-get -f install
 }
 
+install_client() {
+
+  sudo apt update && sudo apt install -y gdebi
+  
+  packages_client=(
+    "-thin-client_"
+    "-thin-client-nls_"
+    "-client_"
+    "-client-nls_"
+  )
+  for pkg in "${packages_client[@]}"; do
+      mask=./dist/client/*${pkg}*
+      sudo dpkg -i $mask
+  done
+  
+  # depends?
+  
+}
 main() {
-    if [ "$1" = "dow1C" ]; then
-        dow1C
-    elif [ "$1" = "unz1C" ]; then
-        unz1C
-    elif [ "$1" = "ins1C" ]; then
-        ins1C
+    if [ "$1" = "download1C" ]; then
+        download1C
+    elif [ "$1" = "unzip1C" ]; then
+        unzip1C
+    elif [ "$1" = "install_server" ]; then
+        install_server
+    elif [ "$1" = "install_client" ]; then
+        install_client
     elif [ "$1" = "all" ]; then
-        dow1C
-        unz1C
-        ins1C
+        download1C
+        unzip1C
+        install_server
     else
-        echo "dow1C, unz1C, ins1C, all"
+        echo "download1C, unzip1C, install_server, install_client, all"
         exit 1
     fi
 }
