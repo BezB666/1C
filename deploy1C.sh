@@ -27,41 +27,41 @@ dow1C() {
       exit 1
   fi
   
-  CLIENTLINK=$(curl -s -G \
+  client_link=$(curl -s -G \
       -b /tmp/cookies.txt \
       --data-urlencode "nick=Platform83" \
       --data-urlencode "ver=$VERSION" \
       --data-urlencode "path=Platform\\${VERSION//./_}\\client_${VERSION//./_}.deb64.zip" \
       https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
       
-  echo 'CLIENTLINK:' \'$CLIENTLINK\'
+  echo 'client_link:' \'$client_link\'
   
-  SERVERINK=$(curl -s -G \
+  server_link=$(curl -s -G \
       -b /tmp/cookies.txt \
       --data-urlencode "nick=Platform83" \
       --data-urlencode "ver=$VERSION" \
       --data-urlencode "path=Platform\\${VERSION//./_}\\deb64_${VERSION//./_}.zip" \
       https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
       
-  echo 'SERVERINK:' \'$SERVERINK\'
+  echo 'server_link:' \'$server_link\'
   
-  PLATFORMLINK=$(curl -s -G \
+  platform_link=$(curl -s -G \
       -b /tmp/cookies.txt \
       --data-urlencode "nick=Platform83" \
       --data-urlencode "ver=$VERSION" \
       --data-urlencode "path=Platform\\${VERSION//./_}\\server64_${VERSION//./_}.zip" \
       https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
       
-  echo 'PLATFORMLINK:' \'$PLATFORMLINK\'
+  echo 'platform_link:' \'$platform_link\'
   
   mkdir -p dist
   
   echo 'client:'
-  curl --progress-bar --fail -b /tmp/cookies.txt -o dist/client.zip -L "$CLIENTLINK"
+  curl --progress-bar --fail -b /tmp/cookies.txt -o dist/client.zip -L "$client_link"
   echo 'server:'
-  curl --progress-bar --fail -b /tmp/cookies.txt -o dist/server.zip -L "$SERVERINK"
+  curl --progress-bar --fail -b /tmp/cookies.txt -o dist/server.zip -L "$server_link"
   # echo 'platform:'
-  # curl --progress-bar --fail -b /tmp/cookies.txt -o dist/platform.zip -L "$PLATFORMLINK"
+  # curl --progress-bar --fail -b /tmp/cookies.txt -o dist/platform.zip -L "$platform_link"
   
   rm /tmp/cookies.txt 
 }
@@ -71,23 +71,38 @@ unz1C() {
   unzip -o ./dist/server.zip -d ./dist/server
   # unzip -o ./dist/platform.zip -d ./dist/platform
 }
-set1C() { 
-  echo "set1C..."; 
+ins1C() { 
+   # sudo apt-get –y install gdebi
+  
+  packages_server=(
+    "-common_"
+    "-common-nls_"
+    "-server_"
+    "-server-nls_"
+    "-ws_"
+    "-ws-nls_"
+    "-crs_"
+  )
+  for pkg in "${packages_server[@]}"; do
+      mask=./dist/server/*${pkg}*
+      sudo dpkg -i $mask
+      # ls $mask
+  done
 }
 
 main() {
     if [ "$1" = "dow1C" ]; then
-        print_one
+        dow1C
     elif [ "$1" = "unz1C" ]; then
-        print_two
-    elif [ "$1" = "set1C" ]; then
-        print_three
+        unz1C
+    elif [ "$1" = "ins1C" ]; then
+        ins1C
     elif [ "$1" = "all" ]; then
         dow1C
         unz1C
-        set1C
+        ins1C
     else
-        echo "use parameters: dow1C, unz1C, set1C, all"
+        echo "dow1C, unz1C, ins1C, all"
         exit 1
     fi
 }
