@@ -87,8 +87,8 @@ install_server() {
     "-crs_"
   )
   for pkg in "${packages_server[@]}"; do
-      mask=./dist/server/*${pkg}*
-      sudo dpkg -i $mask
+      mask=./dist/server/*"${pkg}"*
+      sudo dpkg -i "$mask"
   done
   
   apt-get install libwebkitgtk-1.0-0
@@ -106,8 +106,8 @@ install_client() {
     "-client-nls_"
   )
   for pkg in "${packages_client[@]}"; do
-      mask=./dist/client/*${pkg}*
-      sudo dpkg -i $mask
+      mask=./dist/client/*"${pkg}"*
+      sudo dpkg -i "$mask"
   done
   
   # depends?
