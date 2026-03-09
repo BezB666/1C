@@ -88,7 +88,7 @@ install_server() {
   )
   for pkg in "${packages_server[@]}"; do
       mask=./dist/server/*${pkg}*
-      sudo gdebi -i $mask
+      sudo gdebi $mask
   done
   
   apt-get install libwebkitgtk-1.0-0
@@ -107,7 +107,7 @@ install_client() {
   )
   for pkg in "${packages_client[@]}"; do
       mask=./dist/client/*${pkg}*
-      sudo gdebi -i $mask
+      sudo gdebi $mask
   done
   
   # depends?
