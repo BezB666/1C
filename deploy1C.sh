@@ -113,23 +113,23 @@ install_client() {
   # depends?
   
 }
+
 main() {
-    if [ "$1" = "download1C" ]; then
+    if [ "$1" = "download1C" ] || [ "$1" = "dow1" ]; then
         download1C
-    elif [ "$1" = "unzip1C" ]; then
+    elif [ "$1" = "unzip1C" ] || [ "$1" = "unz1" ]; then
         unzip1C
-    elif [ "$1" = "install_server" ]; then
+    elif [ "$1" = "install_server" ] || [ "$1" = "is" ]; then
         install_server
-    elif [ "$1" = "install_client" ]; then
+    elif [ "$1" = "install_client" ] || [ "$1" = "ic" ]; then
         install_client
     elif [ "$1" = "all" ]; then
         download1C
         unzip1C
         install_server
     else
-        echo "download1C, unzip1C, install_server, install_client, all"
+        echo "download1C (dow1), unzip1C (unz1), install_server (is), install_client (ic), all"
         exit 1
     fi
 }
-
 main "$1"
