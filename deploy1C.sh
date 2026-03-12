@@ -145,11 +145,11 @@ main() {
     VERSION="8.3.27.1859"
  
     if [ "$1" = "dows" ]; then
-        download1C
+        downloadServer
     elif [ "$1" = "dowc" ]; then
-        unzip1C
+        downloadClient
     elif [ "$1" = "dowf" ]; then
-        unzip1C
+        downloadFull
     elif [ "$1" = "unzip1C" ] || [ "$1" = "unz1" ]; then
         unzip1C
     elif [ "$1" = "install_server" ] || [ "$1" = "is" ]; then
