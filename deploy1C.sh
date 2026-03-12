@@ -135,12 +135,7 @@ install_client() {
   done
   
   # depends?
-  
 }
-
-#install_full() {
-#    # depends?
-#}
 
 main() {
     
