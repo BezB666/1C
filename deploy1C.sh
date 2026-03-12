@@ -1,76 +1,100 @@
 #!/bin/bash
 # set -e
+authReleases1cru() { 
+    SRC=$(curl -c /tmp/cookies.txt -s -L https://releases.1c.ru)
+    ACTION=$(echo "$SRC" | grep -oP '(?<=form method="post" id="loginForm" action=")[^"]+(?=")')
+    EXECUTION=$(echo "$SRC" | grep -oP '(?<=input type="hidden" name="execution" value=")[^"]+(?=")')
+  
+    curl -s -L \
+        -o /dev/null \
+        -b /tmp/cookies.txt \
+        -c /tmp/cookies.txt \
+        --data-urlencode "inviteCode=" \
+        --data-urlencode "execution=$EXECUTION" \
+        --data-urlencode "_eventId=submit" \
+        --data-urlencode "username=$USERNAME" \
+        --data-urlencode "password=$PASSWORD" \
+        https://login.1c.ru"$ACTION"
 
-download1C() { 
-  USERNAME="Trogdin"
-  PASSWORD="6gDek----JsO"
-  VERSION="8.3.27.1859"
+    if ! grep -q "TGC" /tmp/cookies.txt
+    then
+        echo "Auth failed"
+        exit 1
+    fi
+
+  }
+
+downloadServer() { 
+
+    $(uthReleases1cru)
+
+    server_link=$(curl -s -G \
+        -b /tmp/cookies.txt \
+        --data-urlencode "nick=Platform83" \
+        --data-urlencode "ver=$VERSION" \
+        --data-urlencode "path=Platform\\${VERSION//./_}\\deb64_${VERSION//./_}.zip" \
+        https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
+        
+    echo 'server_link:' \'$server_link\'
+
+    mkdir -p dist
+
+    echo 'server:'
+    curl --progress-bar --fail -b /tmp/cookies.txt -o dist/server.zip -L "$server_link"
   
-  SRC=$(curl -c /tmp/cookies.txt -s -L https://releases.1c.ru)
-  ACTION=$(echo "$SRC" | grep -oP '(?<=form method="post" id="loginForm" action=")[^"]+(?=")')
-  EXECUTION=$(echo "$SRC" | grep -oP '(?<=input type="hidden" name="execution" value=")[^"]+(?=")')
-  
-  curl -s -L \
-      -o /dev/null \
-      -b /tmp/cookies.txt \
-      -c /tmp/cookies.txt \
-      --data-urlencode "inviteCode=" \
-      --data-urlencode "execution=$EXECUTION" \
-      --data-urlencode "_eventId=submit" \
-      --data-urlencode "username=$USERNAME" \
-      --data-urlencode "password=$PASSWORD" \
-      https://login.1c.ru"$ACTION"
-  
-  if ! grep -q "TGC" /tmp/cookies.txt
-  then
-      echo "Auth failed"
-      exit 1
-  fi
-  
-  client_link=$(curl -s -G \
-      -b /tmp/cookies.txt \
-      --data-urlencode "nick=Platform83" \
-      --data-urlencode "ver=$VERSION" \
-      --data-urlencode "path=Platform\\${VERSION//./_}\\client_${VERSION//./_}.deb64.zip" \
-      https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
-      
-  echo 'client_link:' \'$client_link\'
-  
-  server_link=$(curl -s -G \
-      -b /tmp/cookies.txt \
-      --data-urlencode "nick=Platform83" \
-      --data-urlencode "ver=$VERSION" \
-      --data-urlencode "path=Platform\\${VERSION//./_}\\deb64_${VERSION//./_}.zip" \
-      https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
-      
-  echo 'server_link:' \'$server_link\'
-  
-  platform_link=$(curl -s -G \
-      -b /tmp/cookies.txt \
-      --data-urlencode "nick=Platform83" \
-      --data-urlencode "ver=$VERSION" \
-      --data-urlencode "path=Platform\\${VERSION//./_}\\server64_${VERSION//./_}.zip" \
-      https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
-      
-  echo 'platform_link:' \'$platform_link\'
-  
-  mkdir -p dist
-  
-  echo 'client:'
-  curl --progress-bar --fail -b /tmp/cookies.txt -o dist/client.zip -L "$client_link"
-  echo 'server:'
-  curl --progress-bar --fail -b /tmp/cookies.txt -o dist/server.zip -L "$server_link"
-  # echo 'platform:'
-  # curl --progress-bar --fail -b /tmp/cookies.txt -o dist/platform.zip -L "$platform_link"
-  
-  rm /tmp/cookies.txt 
+    rm /tmp/cookies.txt
+
+}
+
+downloadClient() { 
+ 
+    $(uthReleases1cru)
+
+    client_link=$(curl -s -G \
+        -b /tmp/cookies.txt \
+        --data-urlencode "nick=Platform83" \
+        --data-urlencode "ver=$VERSION" \
+        --data-urlencode "path=Platform\\${VERSION//./_}\\client_${VERSION//./_}.deb64.zip" \
+        https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
+        
+    echo 'client_link:' \'$client_link\'
+
+    mkdir -p dist
+    
+    echo 'client:'
+    curl --progress-bar --fail -b /tmp/cookies.txt -o dist/client.zip -L "$client_link"
+    
+    rm /tmp/cookies.txt
+
+}
+
+downloadFull() { 
+ 
+    $(uthReleases1cru)
+
+    platform_link=$(curl -s -G \
+        -b /tmp/cookies.txt \
+        --data-urlencode "nick=Platform83" \
+        --data-urlencode "ver=$VERSION" \
+        --data-urlencode "path=Platform\\${VERSION//./_}\\server64_${VERSION//./_}.zip" \
+        https://releases.1c.ru/version_file | grep -oP '(?<=a href=")[^"]+(?=">Скачать дистрибутив<)')
+        
+    echo 'platform_link:' \'$platform_link\'
+    
+    mkdir -p dist
+    
+    echo 'platform:'
+    curl --progress-bar --fail -b /tmp/cookies.txt -o dist/platform.zip -L "$platform_link"
+    
+    rm /tmp/cookies.txt
+
 }
 
 unzip1C() { 
   sudo apt update && sudo apt install -y unzip
   unzip -o ./dist/client.zip -d ./dist/client
   unzip -o ./dist/server.zip -d ./dist/server
-  # unzip -o ./dist/platform.zip -d ./dist/platform
+  unzip -o ./dist/platform.zip -d ./dist/platform
 }
 
 install_server() {
@@ -115,8 +139,17 @@ install_client() {
 }
 
 main() {
-    if [ "$1" = "download1C" ] || [ "$1" = "dow1" ]; then
+    
+    USERNAME="Trogdin"
+    PASSWORD="6gDek----JsO"
+    VERSION="8.3.27.1859"
+ 
+    if [ "$1" = "dows" ]; then
         download1C
+    elif [ "$1" = "dowc" ]; then
+        unzip1C
+    elif [ "$1" = "dowf" ]; then
+        unzip1C
     elif [ "$1" = "unzip1C" ] || [ "$1" = "unz1" ]; then
         unzip1C
     elif [ "$1" = "install_server" ] || [ "$1" = "is" ]; then
@@ -128,7 +161,7 @@ main() {
         unzip1C
         install_server
     else
-        echo "download1C (dow1), unzip1C (unz1), install_server (is), install_client (ic), all"
+        echo "download (dows, dowc, dowf), unzip1C (unz1), install (is, ic, if), all"
         exit 1
     fi
 }
