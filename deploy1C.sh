@@ -139,8 +139,9 @@ install_client() {
 }
 
 install_client() {
+    # depends?
 }
-    
+
 main() {
     
     USERNAME="Trogdin"
