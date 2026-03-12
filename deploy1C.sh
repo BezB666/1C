@@ -138,9 +138,9 @@ install_client() {
   
 }
 
-install_client() {
-    # depends?
-}
+#install_full() {
+#    # depends?
+#}
 
 main() {
     
