@@ -26,7 +26,7 @@ authReleases1cru() {
 
 downloadServer() { 
 
-    $(uthReleases1cru)
+    $(authReleases1cru)
 
     server_link=$(curl -s -G \
         -b /tmp/cookies.txt \
@@ -48,7 +48,7 @@ downloadServer() {
 
 downloadClient() { 
  
-    $(uthReleases1cru)
+    $(authReleases1cru)
 
     client_link=$(curl -s -G \
         -b /tmp/cookies.txt \
@@ -70,7 +70,7 @@ downloadClient() {
 
 downloadFull() { 
  
-    $(uthReleases1cru)
+    $(authReleases1cru)
 
     platform_link=$(curl -s -G \
         -b /tmp/cookies.txt \
@@ -138,6 +138,9 @@ install_client() {
   
 }
 
+install_client() {
+}
+    
 main() {
     
     USERNAME="Trogdin"
@@ -152,14 +155,19 @@ main() {
         downloadFull
     elif [ "$1" = "unzip1C" ] || [ "$1" = "unz1" ]; then
         unzip1C
-    elif [ "$1" = "install_server" ] || [ "$1" = "is" ]; then
+    elif [ "$1" = "is" ]; then
         install_server
-    elif [ "$1" = "install_client" ] || [ "$1" = "ic" ]; then
+    elif [ "$1" = "ic" ]; then
+        install_client
+    elif [ "$1" = "if" ]; then
         install_client
     elif [ "$1" = "all" ]; then
-        download1C
+        downloadServer
+        downloadClient
+        downloadFull
         unzip1C
         install_server
+        install_client
     else
         echo "download (dows, dowc, dowf), unzip1C (unz1), install (is, ic, if), all"
         exit 1
