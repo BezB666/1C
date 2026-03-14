@@ -137,6 +137,13 @@ install_client() {
   # depends?
 }
 
+install_full() {
+
+    sudo ./dist/platform/setup-full-${VERSION}-x86_64.run --mode unattended --enable-components \
+        server,ws,server_admin,liberica_jre,desktop_icons,v8_install_deps,ru
+
+}
+
 main() {
     
     USERNAME="Trogdin"
@@ -156,7 +163,7 @@ main() {
     elif [ "$1" = "ic" ]; then
         install_client
     elif [ "$1" = "if" ]; then
-        install_client
+        install_full
     elif [ "$1" = "all" ]; then
         downloadServer
         downloadClient
