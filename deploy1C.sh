@@ -139,9 +139,11 @@ install_client() {
 
 install_full() {
 
-    sudo ./dist/platform/setup-full-${VERSION}-x86_64.run --mode unattended --enable-components \
-        server,ws,server_admin,liberica_jre,desktop_icons,v8_install_deps,ru
-
+    RUNNER=./dist/platform/setup-full-${VERSION}-x86_64.run
+    chmod +x "$RUNNER"
+    sudo "$RUNNER" --mode unattended --enable-components \
+        server,ws,server_admin,liberica_jre,desktop_icons,v8_install_deps,ru \
+        --show-progress --show-output
 }
 
 main() {
